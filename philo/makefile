@@ -3,20 +3,20 @@
 #                                                         :::      ::::::::    #
 #    makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: tvanelst <tvanelst.student@19.be>          +#+  +:+       +#+         #
+#    By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/07/30 16:56:01 by tvanelst          #+#    #+#              #
-#    Updated: 2021/07/30 16:57:10 by tvanelst         ###   ########.fr        #
+#    Updated: 2021/08/01 18:23:09 by tvanelst         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC			=	gcc
 
-CFLAGS		=	-Wall -Wextra -Werror -Isrcs
+CFLAGS		=	-Wall -Wextra -Werror -Iincludes
 
 NAME		=	philo
 
-SRCS		=	main.c
+SRCS		=	main.c utils.c
 
 OBJ			=	${addprefix srcs/, ${SRCS:.c=.o}}
 
