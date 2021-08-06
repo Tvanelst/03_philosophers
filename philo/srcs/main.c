@@ -6,18 +6,34 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/01 17:18:30 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/08/01 19:32:41 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/08/06 17:25:17 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+unsigned long long	get_time_stamp(struct timeval	start)
+{
+	struct timeval	now;
+
+	gettimeofday(&now, 0);
+	return ((now.tv_sec - start.tv_sec) * 1000
+		+ (now.tv_usec - start.tv_usec) / 1000);
+}
+
+void	display_action(const t_phylo *phylo, char *action)
+{
+	const unsigned long long time_stamp = get_time_stamp(phylo->settings->start);
+
+	printf("%llu %d %s\n", time_stamp, phylo->index, action);
+}
+
 void	*routine(void *arg)
 {
-	const t_phylo *phylo = (t_phylo *)arg;
+	const	t_phylo *phylo = (t_phylo *)arg;
 
-	(void)phylo;
-	printf("phylo index = %d\n", phylo->index);
+	printf("phylo index = %d is created at %llu\n", phylo->index, get_time_stamp(phylo->settings->start));
+	display_action(phylo, FORK);
 	return (NULL);
 }
 
@@ -36,6 +52,11 @@ time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]");
 	settings->time_to_eat = ft_atoi(argv[3]);
 	settings->time_to_sleep = ft_atoi(argv[4]);
 	settings->max_num_of_meal = -1;
+	if (gettimeofday(&settings->start, 0))
+	{
+		ft_putstr("gettimeofday fail");
+		return (NULL);
+	}
 	if (argc == 6)
 		settings->max_num_of_meal = ft_atoi(argv[5]);
 	philos = malloc(sizeof(*philos) * settings->number_of_philos);
@@ -49,6 +70,7 @@ int	main(int argc, char **argv)
 	t_phylo			*philos;
 	t_settings		settings;
 	unsigned char	index;
+	//pthread_mutex_t	mutex;
 
 	philos = parsing(argc, argv, &settings);
 	if (!philos)
@@ -59,10 +81,12 @@ int	main(int argc, char **argv)
 		philos->settings = &settings;
 		philos->index = index++;
 		if (pthread_create(&philos->thread, NULL, routine, philos))
-			break; //error creating threads + free(philo)
+			break ;//error creating threads + free(philo)
 		//pthread_join();
 		philos++;
+		usleep(50000);
 	}
+	//pthread_mutex_init():
 	free(philos - index);
 	return (0);
 }
