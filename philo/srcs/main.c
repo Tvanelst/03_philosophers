@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/01 17:18:30 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/08/06 17:25:17 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/08/08 17:22:24 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,25 +21,35 @@ unsigned long long	get_time_stamp(struct timeval	start)
 		+ (now.tv_usec - start.tv_usec) / 1000);
 }
 
-void	display_action(const t_phylo *phylo, char *action)
+void	display_action(const t_philo *phylo, char *action)
 {
 	const unsigned long long time_stamp = get_time_stamp(phylo->settings->start);
 
+	pthread_mutex_lock(&phylo->settings->write_mutex);
 	printf("%llu %d %s\n", time_stamp, phylo->index, action);
+	if (ft_strncmp(action, DIED, 5))
+		pthread_mutex_unlock(&phylo->settings->write_mutex);
+	else
+	{
+		pthread_mutex_destroy(&phylo->settings->write_mutex);
+		usleep(200000);
+	}
 }
 
 void	*routine(void *arg)
 {
-	const	t_phylo *phylo = (t_phylo *)arg;
+	t_philo	*phylo;
 
-	printf("phylo index = %d is created at %llu\n", phylo->index, get_time_stamp(phylo->settings->start));
-	display_action(phylo, FORK);
+	phylo = (t_philo *)arg;
+	while (1)
+		if (!eat_and_sleep(phylo))
+			break;
 	return (NULL);
 }
 
-static t_phylo	*parsing(int argc, char**argv, t_settings *settings)
+static t_philo	*parsing(int argc, char**argv, t_settings *settings)
 {
-	t_phylo	*philos;
+	t_philo	*philos;
 
 	if (argc != 5 && argc != 6)
 	{
@@ -59,34 +69,76 @@ time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]");
 	}
 	if (argc == 6)
 		settings->max_num_of_meal = ft_atoi(argv[5]);
-	philos = malloc(sizeof(*philos) * settings->number_of_philos);
+	philos = malloc((sizeof(*philos) + sizeof(pthread_mutex_t))
+		* settings->number_of_philos);
 	if (!philos)
 		ft_putstr("malloc fail");
 	return (philos);
 }
 
+int	init_forks(pthread_mutex_t *forks, unsigned char index)
+{
+	while (index--)
+		if (pthread_mutex_init(forks + index, 0))
+			return (0);
+	return (1);
+}
+
+int	destroy_forks(pthread_mutex_t *forks, unsigned char index)
+{
+	while (index--)
+		if (pthread_mutex_destroy(forks + index))
+			return (0);
+	return (1);
+}
+
+char	check_for_death(t_philo *philo, t_settings *settings)
+{
+	const unsigned long long now = get_time_stamp(philo->settings->start);
+	unsigned char	i;
+
+	i = 0;
+	while (i++ < settings->number_of_philos)
+	{
+		if (now - philo->last_meal > philo->settings->time_to_die)
+		{
+			display_action(philo, DIED);
+			return (1);
+		}
+		philo++;
+	}
+	return(0);
+}
+
 int	main(int argc, char **argv)
 {
-	t_phylo			*philos;
+	t_philo			*philos;
+	pthread_mutex_t	*forks;
 	t_settings		settings;
 	unsigned char	index;
-	//pthread_mutex_t	mutex;
 
 	philos = parsing(argc, argv, &settings);
 	if (!philos)
 		return (1);
+	forks = (pthread_mutex_t *)(philos + settings.number_of_philos);
+	if (!init_forks(forks, settings.number_of_philos))
+		return (2);
+	pthread_mutex_init(&settings.write_mutex, 0);
 	index = 0;
 	while (index < settings.number_of_philos)
 	{
 		philos->settings = &settings;
-		philos->index = index++;
+		philos->fork_l = forks + index++;
+		philos->fork_r = forks + (index % settings.number_of_philos);
+		philos->last_meal = get_time_stamp(settings.start);
+		philos->index = index;
 		if (pthread_create(&philos->thread, NULL, routine, philos))
 			break ;//error creating threads + free(philo)
-		//pthread_join();
 		philos++;
-		usleep(50000);
 	}
-	//pthread_mutex_init():
+	while (!check_for_death(philos - index, &settings))
+		usleep(1000);
+	destroy_forks(forks, settings.number_of_philos);
 	free(philos - index);
 	return (0);
 }

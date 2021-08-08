@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/01 17:41:53 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/08/01 18:23:45 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/08/08 16:52:07 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,4 +60,12 @@ int	ft_atoi(const char *str)
 	if (sign)
 		return (result * sign);
 	return (result);
+}
+
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
+{
+	while ((*s1 || *s2) && n--)
+		if (*s1++ != *s2++)
+			return ((unsigned char)*(s1 - 1) - (unsigned char)*(s2 - 1));
+	return (0);
 }
