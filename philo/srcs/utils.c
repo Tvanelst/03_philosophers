@@ -6,11 +6,12 @@
 /*   By: tvanelst <tvanelst.student@19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/01 17:41:53 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/08/09 12:24:48 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/08/09 15:42:52 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
 unsigned long long	get_time_stamp(struct timeval	start)
 {
 	struct timeval	now;
@@ -57,10 +58,10 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 
 void	display_action(const t_philo *phylo, char *action)
 {
-	const unsigned long long	time_stamp
-		= get_time_stamp(phylo->settings->start);
+	unsigned long long	time_stamp;
 
 	pthread_mutex_lock(&phylo->settings->write_mutex);
+	time_stamp = get_time_stamp(phylo->settings->start);
 	printf("%llu %d %s\n", time_stamp, phylo->index, action);
 	if (ft_strncmp(action, DIED, 5))
 		pthread_mutex_unlock(&phylo->settings->write_mutex);

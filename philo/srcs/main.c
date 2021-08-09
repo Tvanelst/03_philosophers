@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst.student@19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/01 17:18:30 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/08/09 12:25:17 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/08/09 15:36:09 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]");
 	return (philos);
 }
 
-pthread_mutex_t	*init_philo_and_forks(t_philo *philos, t_settings *settings)
+static pthread_mutex_t	*init_philos_and_forks(t_philo *philos, t_settings *settings)
 {
 	pthread_mutex_t	*forks;
 	unsigned char	index;
@@ -72,7 +72,7 @@ pthread_mutex_t	*init_philo_and_forks(t_philo *philos, t_settings *settings)
 	return (forks);
 }
 
-int	destroy_forks(pthread_mutex_t *forks, unsigned char index)
+static int	destroy_philos_and_forks(pthread_mutex_t *forks, unsigned char index)
 {
 	while (index--)
 		if (pthread_mutex_destroy(forks + index))
@@ -80,19 +80,16 @@ int	destroy_forks(pthread_mutex_t *forks, unsigned char index)
 	return (1);
 }
 
-char	check_for_death(t_philo *philo, t_settings *settings)
+static char	check_for_end(t_philo *philo, t_settings *settings)
 {
 	const unsigned long long	now = get_time_stamp(philo->settings->start);
 	unsigned char				i;
 
 	i = 0;
-	while (settings->max_set && i++ < settings->number_of_philos)
-	{
-		if (philo->number_of_meal != settings->max_num_of_meal)
-			break ;
-		else
+	while (settings->max_set && i < settings->number_of_philos
+		&& (philo + i)->number_of_meal == settings->max_num_of_meal)
+		if (++i == settings->number_of_philos)
 			return (1);
-	}
 	i = 0;
 	while (i++ < settings->number_of_philos)
 	{
@@ -115,13 +112,13 @@ int	main(int argc, char **argv)
 	philos = parsing(argc, argv, &settings);
 	if (!philos)
 		return (1);
-	forks = init_philo_and_forks(philos, &settings);
+	forks = init_philos_and_forks(philos, &settings);
 	if (!forks)
 		return (2);
-	while (!check_for_death(philos, &settings))
+	while (!check_for_end(philos, &settings))
 		usleep(800);
-	destroy_forks(forks, settings.number_of_philos);
-	pthread_mutex_destroy(&settings.write_mutex);
+	destroy_philos_and_forks(forks, settings.number_of_philos);
 	free(philos);
+	pthread_mutex_destroy(&settings.write_mutex);
 	return (0);
 }
