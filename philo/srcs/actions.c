@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst.student@19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 17:40:51 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/08/09 15:44:53 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/08/09 16:38:12 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,23 +17,6 @@ void	take_forks_and_eat(t_philo *philo)
 	const t_settings	*settings = philo->settings;
 	const char			offset = philo->index % settings->number_of_philos % 2;
 
-	if ((settings->number_of_philos % 2) && philo->index == settings->number_of_philos)
-	{
-		if (philo->number_of_meal % 2)
-		{
-			pthread_mutex_lock(philo->fork_l);
-			display_action(philo, FORK);
-			pthread_mutex_lock(philo->fork_r);
-			display_action(philo, FORK);
-		}
-		else
-		{
-			pthread_mutex_lock(philo->fork_r);
-			display_action(philo, FORK);
-			pthread_mutex_lock(philo->fork_l);
-			display_action(philo, FORK);
-		}
-	}
 	pthread_mutex_lock(philo->fork_l + offset);
 	display_action(philo, FORK);
 	pthread_mutex_lock(philo->fork_r - offset);
@@ -66,7 +49,8 @@ void	*eat_and_sleep(void *arg)
 		while (get_time_stamp(settings->start) - philo->last_meal
 			< settings->time_to_sleep + settings->time_to_eat)
 			usleep(900);
-		if (!settings->max_set || philo->number_of_meal < settings->max_num_of_meal)
+		if (!settings->max_set
+			|| philo->number_of_meal < settings->max_num_of_meal)
 			display_action(philo, THINK);
 	}
 	return (NULL);

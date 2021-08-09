@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst.student@19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/01 17:18:30 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/08/09 15:36:09 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/08/09 16:32:41 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,8 @@ time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]");
 		printf("gettimeofday fail");
 		return (NULL);
 	}
-	if (argc == 6)
-	{
-		settings->max_set = 1;
+	if (argc == 6 && ++settings->max_set)
 		settings->max_num_of_meal = ft_atoi(argv[5]);
-	}
 	philos = malloc((sizeof(*philos) + sizeof(pthread_mutex_t))
 			* settings->number_of_philos);
 	if (!philos)
@@ -44,7 +41,8 @@ time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]");
 	return (philos);
 }
 
-static pthread_mutex_t	*init_philos_and_forks(t_philo *philos, t_settings *settings)
+static pthread_mutex_t	*init_philos_and_forks(t_philo *philos,
+		t_settings *settings)
 {
 	pthread_mutex_t	*forks;
 	unsigned char	index;
@@ -72,7 +70,8 @@ static pthread_mutex_t	*init_philos_and_forks(t_philo *philos, t_settings *setti
 	return (forks);
 }
 
-static int	destroy_philos_and_forks(pthread_mutex_t *forks, unsigned char index)
+static int	destroy_philos_and_forks(pthread_mutex_t *forks,
+		unsigned char index)
 {
 	while (index--)
 		if (pthread_mutex_destroy(forks + index))
