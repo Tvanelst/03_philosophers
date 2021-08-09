@@ -3,36 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
+/*   By: tvanelst <tvanelst.student@19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/01 17:41:53 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/08/08 16:52:07 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/08/09 12:24:48 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-static size_t	ft_strlen(char *str)
+unsigned long long	get_time_stamp(struct timeval	start)
 {
-	size_t	i;
+	struct timeval	now;
 
-	i = 0;
-	while (*str++)
-		i++;
-	return (i);
-}
-
-void	ft_putstr(char *str)
-{
-	write(1, str, ft_strlen(str));
-	write(1, "\n", 1);
-}
-
-static int	ft_isdigit(int c)
-{
-	if ('0' <= c && c <= '9')
-		return (1);
-	return (0);
+	gettimeofday(&now, 0);
+	return ((now.tv_sec - start.tv_sec) * 1000
+		+ (now.tv_usec - start.tv_usec) / 1000);
 }
 
 int	ft_atoi(const char *str)
@@ -51,7 +36,7 @@ int	ft_atoi(const char *str)
 		if (*str++ == '-')
 			sign = -1;
 	}
-	while (ft_isdigit(*str))
+	while ('0' <= *str && *str <= '9')
 	{
 		if ((result == limit && (*str - '0') > 6 - sign) || result > limit)
 			return (-sign - 1);
@@ -68,4 +53,17 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 		if (*s1++ != *s2++)
 			return ((unsigned char)*(s1 - 1) - (unsigned char)*(s2 - 1));
 	return (0);
+}
+
+void	display_action(const t_philo *phylo, char *action)
+{
+	const unsigned long long	time_stamp
+		= get_time_stamp(phylo->settings->start);
+
+	pthread_mutex_lock(&phylo->settings->write_mutex);
+	printf("%llu %d %s\n", time_stamp, phylo->index, action);
+	if (ft_strncmp(action, DIED, 5))
+		pthread_mutex_unlock(&phylo->settings->write_mutex);
+	else
+		usleep(200000);
 }
