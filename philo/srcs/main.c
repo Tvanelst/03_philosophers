@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst.student@19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/01 17:18:30 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/08/12 11:59:21 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/08/12 12:13:59 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static t_philo	*parsing(int argc, char**argv, t_settings *settings)
 	if (argc != 5 && argc != 6)
 	{
 		printf("usage: ./philo number_of_philosophers time_to_die \
-time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]");
+time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]\n");
 		return (NULL);
 	}
 	settings->number_of_philos = ft_atoi(argv[1]);
