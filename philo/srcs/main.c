@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst.student@19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/01 17:18:30 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/08/09 16:32:41 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/08/12 11:59:21 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,13 +111,15 @@ int	main(int argc, char **argv)
 	philos = parsing(argc, argv, &settings);
 	if (!philos)
 		return (1);
-	forks = init_philos_and_forks(philos, &settings);
-	if (!forks)
-		return (2);
-	while (!check_for_end(philos, &settings))
-		usleep(800);
-	destroy_philos_and_forks(forks, settings.number_of_philos);
-	free(philos);
-	pthread_mutex_destroy(&settings.write_mutex);
+	if (settings.number_of_philos)
+	{
+		forks = init_philos_and_forks(philos, &settings);
+		if (forks)
+			while (!check_for_end(philos, &settings))
+				usleep(800);
+		destroy_philos_and_forks(forks, settings.number_of_philos);
+		free(philos);
+		pthread_mutex_destroy(&settings.write_mutex);
+	}
 	return (0);
 }

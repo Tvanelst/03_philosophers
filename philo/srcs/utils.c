@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst.student@19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/01 17:41:53 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/08/09 15:42:52 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/08/12 12:00:00 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	ft_atoi(const char *str)
 	if (*str == '-' || *str == '+')
 	{
 		if (*str++ == '-')
-			sign = -1;
+			return (0);
 	}
 	while ('0' <= *str && *str <= '9')
 	{
