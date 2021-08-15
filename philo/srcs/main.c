@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/01 17:18:30 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/08/15 23:38:05 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/08/16 00:45:25 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,14 @@ static char	check_for_end(t_philo *philo, t_settings *settings)
 	i = 0;
 	while (settings->max_set && i < settings->number_of_philos
 		&& (philo + i)->number_of_meal == settings->max_num_of_meal)
+	{
 		if (++i == settings->number_of_philos)
+		{
+			pthread_mutex_lock(&settings->write_mutex);
+			usleep(200000);
 			return (1);
+		}
+	}
 	i = 0;
 	while (i++ < settings->number_of_philos)
 	{
@@ -87,7 +93,7 @@ int	main(int argc, char **argv)
 		forks = init_philos_and_forks(philos, &settings);
 		if (forks)
 			while (!check_for_end(philos, &settings))
-				usleep(60);
+				usleep(800);
 		destroy_philos_and_forks(forks, settings.number_of_philos);
 		pthread_mutex_destroy(&settings.write_mutex);
 	}
