@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/01 17:20:18 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/08/15 22:40:17 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/08/15 22:49:34 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <stdio.h>
 # include <unistd.h>
 # include <sys/time.h>
+# include <limits.h>
 
 # define FORK "has taken a fork"
 # define EAT "is eating"
