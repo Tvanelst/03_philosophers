@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/01 17:18:30 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/08/15 20:58:47 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/08/15 23:38:05 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static pthread_mutex_t	*init_philos_and_forks(t_philo *philos,
 		philos->number_of_meal = 0;
 		philos->fork_l = forks + index++;
 		philos->fork_r = forks + (index % settings->number_of_philos);
-		philos->last_meal = get_time_stamp(settings->start);
+		philos->last_meal = 0;
 		philos->index = index;
 		if (pthread_create(&philos->thread, NULL, eat_and_sleep, philos))
 			return (0);
@@ -87,7 +87,7 @@ int	main(int argc, char **argv)
 		forks = init_philos_and_forks(philos, &settings);
 		if (forks)
 			while (!check_for_end(philos, &settings))
-				usleep(800);
+				usleep(60);
 		destroy_philos_and_forks(forks, settings.number_of_philos);
 		pthread_mutex_destroy(&settings.write_mutex);
 	}

@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 20:56:46 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/08/15 22:50:29 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/08/15 23:41:10 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,6 @@ int	ft_isdigit(int c)
 
 int	is_int(const char *str)
 {
-	if (*str == '-')
-	{
-		str++;
-		if (!ft_isdigit(*str))
-			return (0);
-	}
 	while (*str)
 		if (!ft_isdigit(*str++))
 			return (0);
@@ -53,7 +47,10 @@ int	max_int_value(const char *str)
 int	get_value(const char *str, unsigned int *var)
 {
 	if (!is_int(str) || !max_int_value(str))
+	{
+		printf("%s : invalid argument\n", str);
 		return (0);
+	}
 	*var = ft_atoi(str);
 	return (1);
 }
