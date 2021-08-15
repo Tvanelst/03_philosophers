@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 20:56:46 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/08/15 22:41:43 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/08/15 22:50:29 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ int	max_int_value(const char *str)
 	{
 		n *= 10;
 		n += *str++ - '0';
-		if (n > (long)INT32_MAX + sign)
+		if (n > (long)INT_MAX + sign)
 			return (0);
 	}
 	return (1);
