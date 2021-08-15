@@ -3,43 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tvanelst <tvanelst.student@19.be>          +#+  +:+       +#+        */
+/*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/01 17:18:30 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/08/12 12:13:59 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/08/15 20:58:47 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-static t_philo	*parsing(int argc, char**argv, t_settings *settings)
-{
-	t_philo	*philos;
-
-	if (argc != 5 && argc != 6)
-	{
-		printf("usage: ./philo number_of_philosophers time_to_die \
-time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]\n");
-		return (NULL);
-	}
-	settings->number_of_philos = ft_atoi(argv[1]);
-	settings->time_to_die = ft_atoi(argv[2]);
-	settings->time_to_eat = ft_atoi(argv[3]);
-	settings->time_to_sleep = ft_atoi(argv[4]);
-	settings->max_set = 0;
-	if (gettimeofday(&settings->start, 0))
-	{
-		printf("gettimeofday fail");
-		return (NULL);
-	}
-	if (argc == 6 && ++settings->max_set)
-		settings->max_num_of_meal = ft_atoi(argv[5]);
-	philos = malloc((sizeof(*philos) + sizeof(pthread_mutex_t))
-			* settings->number_of_philos);
-	if (!philos)
-		printf("malloc fail");
-	return (philos);
-}
 
 static pthread_mutex_t	*init_philos_and_forks(t_philo *philos,
 		t_settings *settings)
@@ -118,8 +89,8 @@ int	main(int argc, char **argv)
 			while (!check_for_end(philos, &settings))
 				usleep(800);
 		destroy_philos_and_forks(forks, settings.number_of_philos);
-		free(philos);
 		pthread_mutex_destroy(&settings.write_mutex);
 	}
+	free(philos);
 	return (0);
 }

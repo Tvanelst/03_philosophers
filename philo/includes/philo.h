@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tvanelst <tvanelst.student@19.be>          +#+  +:+       +#+        */
+/*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/01 17:20:18 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/08/09 12:14:57 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/08/15 22:40:17 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 
 typedef struct s_settings
 {
-	unsigned char	number_of_philos;
+	unsigned int	number_of_philos;
 	unsigned int	time_to_die;
 	unsigned int	time_to_eat;
 	unsigned int	time_to_sleep;
@@ -54,5 +54,6 @@ void				display_action(const t_philo *phylo, char *action);
 unsigned long long	get_time_stamp(struct timeval	start);
 void				*eat_and_sleep(void *arg);
 int					ft_strncmp(const char *s1, const char *s2, size_t n);
+t_philo				*parsing(int argc, char**argv, t_settings *settings);
 
 #endif
